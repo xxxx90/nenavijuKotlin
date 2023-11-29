@@ -5,15 +5,15 @@ fun main(args: Array<String>) {
 
     println(WallService.idCounter)
 
-    val post1 = Post(comments = comments, likes = likes, repost = report, text = "post1")
-    val post2 = Post(id = 2, comments = comments, likes = likes, repost = report, text = "post2")
-    val post3 = Post(text = "post3")
-    val post4 = Post(text = "post4")
-    val post5 = Post(text = "post5")
-    val post6 = Post(text = "post6")
-    val post7 = Post(text = "post7")
-    val post8 = Post(text = "post8")
-    val post9 = Post(id = 5, text = "post9")
+    val post1 = Post(comments = comments, likes = likes, repost = report, text = "post1", views = null)
+    val post2 = Post(id = 2, comments = comments, likes = likes, repost = report, text = "post2", views = null)
+    val post3 = Post(text = "post3", views = null)
+    val post4 = Post(text = "post4", views = null)
+    val post5 = Post(text = "post5", views = null)
+    val post6 = Post(text = "post6", views = null)
+    val post7 = Post(text = "post7", views = null)
+    val post8 = Post(text = "post8", views = View())
+    val post9 = Post(id = 5, text = "post9", views = View())
     WallService.add(post1)
     WallService.add(post2)
     WallService.add(post3)
@@ -47,6 +47,7 @@ data class Post(
     val copyright: String = "",
     val likes: Likes = Likes(),
     val repost: Reposts = Reposts(),
+    val views: View?
 ) {
 }
 
@@ -81,8 +82,6 @@ object WallService {
         }
         return false
     }
-
-
 
 
     fun printPost() {
