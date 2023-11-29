@@ -3,14 +3,14 @@ import org.junit.Assert.*
 import org.junit.Before
 
 
-@Before
-fun setUp() {
-    WallService.clear()
-}
+
 
 
 class WallServiceTest {
-
+    @Before
+    fun setUp() {
+        WallService.clear()
+    }
     @Test
     fun testAdd() {
         val post1 = Post(comments = Comments(), copyright = " ", likes = Likes(), repost = Reposts(), text = "yes", views = null)
