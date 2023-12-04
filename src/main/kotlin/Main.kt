@@ -47,7 +47,7 @@ data class Post(
     val copyright: String = "",
     val likes: Likes = Likes(),
     val repost: Reposts = Reposts(),
-    val views: View?
+    val views: View? = null
 ) {
 }
 
@@ -97,5 +97,99 @@ object WallService {
         idCounter = 1
 
     }
+
+}
+
+
+interface Attachment {
+    val type: String
+}
+
+class Photo(override val type: String) : Attachment {
+    var id: Int
+        get() {
+            return id
+        }
+        set(value) {
+            id = value
+        }
+    var album_id: Int
+        get() {
+            return album_id
+        }
+        set(value) {
+            album_id = value
+        }
+
+    var owner_id: Int
+        get() {
+            return owner_id
+        }
+        set(value) {
+            owner_id = value
+        }
+
+    var user_id: Int
+        get() {
+            return user_id
+        }
+        set(value) {
+            user_id = value
+        }
+
+
+    var text: String
+        get() {
+            return text
+        }
+        set(value) {
+            text = value
+        }
+
+
+}
+
+
+
+
+
+class Video (override val type: String) : Attachment {
+    var id: Int
+        get() {
+            return id
+        }
+        set(value) {
+            id = value
+        }
+
+    var owner_id: Int
+        get() {
+            return owner_id
+        }
+        set(value) {
+            owner_id = value
+        }
+    var title: String
+        get() {
+            return title
+        }
+        set(value) {
+            title = value
+        }
+
+    var description: String
+        get() {
+            return description
+        }
+        set(value) {
+            description = value
+        }
+    var duration: Int
+        get() {
+            return duration
+        }
+        set(value) {
+            duration = value
+        }
 
 }
