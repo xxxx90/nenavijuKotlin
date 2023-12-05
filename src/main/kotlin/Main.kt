@@ -104,92 +104,48 @@ object WallService {
 interface Attachment {
     val type: String
 }
+class Photo(override val type: String = "photo", val photo: PhotoType) : Attachment
+data class PhotoType(
+    var id: Int,
+    var album_id: Int,
+    var owner_id: Int,
+    var user_id: Int,
+    var text: String,
+)
 
-class Photo(override val type: String) : Attachment {
-    var id: Int
-        get() {
-            return id
-        }
-        set(value) {
-            id = value
-        }
-    var album_id: Int
-        get() {
-            return album_id
-        }
-        set(value) {
-            album_id = value
-        }
+class Video(override val type: String = "video") : Attachment
+data class VideoType(
+    var id: Int,
+    var owner_id: Int,
+    var title: String,
+    var description: String,
+    var duration: Int,
+)
 
-    var owner_id: Int
-        get() {
-            return owner_id
-        }
-        set(value) {
-            owner_id = value
-        }
+class File(override val type: String = "file") : Attachment
+data class FileType(
+    var id: Int,
+    var owner_id: Int,
+    var title: String,
+    var size: Int,
+    var ext: String
+)
 
-    var user_id: Int
-        get() {
-            return user_id
-        }
-        set(value) {
-            user_id = value
-        }
+class Present(override val type: String = "present") : Attachment
+data class PresentType(
+    var id: Int,
+    var thumb_256: String,
+    var thumb_96: String,
+    var thumb_48: String
+)
 
-
-    var text: String
-        get() {
-            return text
-        }
-        set(value) {
-            text = value
-        }
-
-
-}
-
-
-
-
-
-class Video (override val type: String) : Attachment {
-    var id: Int
-        get() {
-            return id
-        }
-        set(value) {
-            id = value
-        }
-
-    var owner_id: Int
-        get() {
-            return owner_id
-        }
-        set(value) {
-            owner_id = value
-        }
-    var title: String
-        get() {
-            return title
-        }
-        set(value) {
-            title = value
-        }
-
-    var description: String
-        get() {
-            return description
-        }
-        set(value) {
-            description = value
-        }
-    var duration: Int
-        get() {
-            return duration
-        }
-        set(value) {
-            duration = value
-        }
-
-}
+class Story(override val type: String = "story") : Attachment
+data class StoryType(
+    var id: Int,
+    var owner_id: Int,
+    var date: Int,
+    var is_expired: Boolean,
+    var is_deleted: Boolean,
+    var photo: Photo,
+    var videoType: Video
+)
