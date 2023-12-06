@@ -101,14 +101,14 @@ object WallService {
 
     fun createComment(postId: Int, comment: Comment): Comment {
 
-        for ((index, postInArray) in posts.withIndex()) {
+        for (postInArray in posts) {
             //println(postInArray)
             if (postInArray.id == postId) {
-                comments += WallService.comments[index]
+                comments += comment
                 return comments.last()
             }
         }
-return throw  PostNotFoundException("No post wist $id")
+throw  PostNotFoundException("No post wist $postId")
 
     }
 
