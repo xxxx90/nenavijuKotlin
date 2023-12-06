@@ -131,7 +131,7 @@ data class FileType(
     var ext: String
 )
 
-class Present(override val type: String = "present", present: PresentType) : Attachment
+class Present(override val type: String = "present", val present: PresentType) : Attachment
 data class PresentType(
     var id: Int,
     var thumb_256: String,
@@ -139,7 +139,7 @@ data class PresentType(
     var thumb_48: String
 )
 
-class Story(override val type: String = "story", story: StoryType) : Attachment
+class Story(override val type: String = "story", val story: StoryType) : Attachment
 data class StoryType(
     var id: Int,
     var owner_id: Int,
