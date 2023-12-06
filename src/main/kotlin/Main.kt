@@ -113,7 +113,7 @@ data class PhotoType(
     var text: String,
 )
 
-class Video(override val type: String = "video") : Attachment
+class Video(override val type: String = "video", val video: VideoType) : Attachment
 data class VideoType(
     var id: Int,
     var owner_id: Int,
@@ -122,7 +122,7 @@ data class VideoType(
     var duration: Int,
 )
 
-class File(override val type: String = "file") : Attachment
+class File(override val type: String = "file", val fileType: FileType) : Attachment
 data class FileType(
     var id: Int,
     var owner_id: Int,
@@ -131,7 +131,7 @@ data class FileType(
     var ext: String
 )
 
-class Present(override val type: String = "present") : Attachment
+class Present(override val type: String = "present", present: PresentType) : Attachment
 data class PresentType(
     var id: Int,
     var thumb_256: String,
@@ -139,7 +139,7 @@ data class PresentType(
     var thumb_48: String
 )
 
-class Story(override val type: String = "story") : Attachment
+class Story(override val type: String = "story", story: StoryType) : Attachment
 data class StoryType(
     var id: Int,
     var owner_id: Int,
