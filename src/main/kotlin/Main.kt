@@ -95,6 +95,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
+        comments = emptyArray()
         idCounter = 1
 
     }
@@ -108,18 +109,20 @@ object WallService {
                 return comments.last()
             }
         }
-throw  PostNotFoundException("No post wist $postId")
+        throw PostNotFoundException("No post wist $postId")
 
     }
 
 
 }
 
-class PostNotFoundException (message: String) :RuntimeException (message)
-data class Donut (val is_donut: Boolean=false, val placeholder : String="")
+class PostNotFoundException(message: String) : RuntimeException(message)
+data class Donut(val is_donut: Boolean = false, val placeholder: String = "")
 
-class Comment (val id: Int=0, val from_id : Int=0, val date: Int =0, val text: String="", val donut:Donut?=null,
-    val reply_to_user: Int=0, val reply_to_comment: Int=0, val attachments: Attachment?=null, )
+class Comment(
+    val id: Int = 0, val from_id: Int = 0, val date: Int = 0, val text: String = "", val donut: Donut? = null,
+    val reply_to_user: Int = 0, val reply_to_comment: Int = 0, val attachments: Attachment? = null,
+)
 
 interface Attachment {
     val type: String
