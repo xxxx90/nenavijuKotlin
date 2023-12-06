@@ -1,3 +1,5 @@
+import java.lang.RuntimeException
+
 fun main(args: Array<String>) {
     val comments = Comments()
     val likes = Likes()
@@ -54,12 +56,11 @@ data class Post(
 object WallService {
     var idCounter = 1
     private var posts = emptyArray<Post>()
+    private var comments = emptyArray<Comment>()
     private var id = 0
 
     fun add(post: Post): Post {
         posts += post.copy(id = idCounter++)
-
-
 
         return posts.last()
     }
@@ -98,12 +99,32 @@ object WallService {
 
     }
 
+    fun createComment(postId: Int, comment: Comment): Comment {
+
+        for ((index, postInArray) in posts.withIndex()) {
+            //println(postInArray)
+            if (postInArray.id == postId) {
+                comments += WallService.comments[index]
+                return comments.last()
+            }
+        }
+return throw  PostNotFoundException("No post wist $id")
+
+    }
+
+
 }
 
+class PostNotFoundException (message: String) :RuntimeException (message)
+data class Donut (val is_donut: Boolean=false, val placeholder : String="")
+
+class Comment (val id: Int=0, val from_id : Int=0, val date: Int =0, val text: String="", val donut:Donut?=null,
+    val reply_to_user: Int=0, val reply_to_comment: Int=0, val attachments: Attachment?=null, )
 
 interface Attachment {
     val type: String
 }
+
 class Photo(override val type: String = "photo", val photo: PhotoType) : Attachment
 data class PhotoType(
     var id: Int,
