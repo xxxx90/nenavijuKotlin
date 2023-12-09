@@ -57,6 +57,7 @@ object WallService {
     var idCounter = 1
     private var posts = emptyArray<Post>()
     private var comments = emptyArray<Comment>()
+    private var notes = emptyArray<Note>()
     private var id = 0
 
     fun add(post: Post): Post {
@@ -112,6 +113,48 @@ object WallService {
         throw PostNotFoundException("No post wist $postId")
 
     }
+
+    fun addNote(postId: Int, note: Note): Note {
+        for (postInArray in posts) {
+            //println(postInArray)
+            if (postInArray.id == postId) {
+                notes += note
+                return notes.last()
+            }
+        }
+        throw PostNotFoundException("No post wist $postId")
+    }
+
+    fun createNote(postId: Int, note: Note): Note {
+
+        for (postInArray in posts) {
+            //println(postInArray)
+            if (postInArray.id == postId) {
+                notes += note
+                return notes.last()
+            }
+        }
+        throw PostNotFoundException("No post wist $postId")
+
+    }
+
+    fun updateNote(note: Note): Boolean {
+
+
+        for ((index, postInArray) in notes.withIndex()) {
+            //println(postInArray)
+            if (postInArray.id == note.id) {
+                note[index] = note.copy(
+                    isDelete=true
+                    
+                )
+                return true
+            }
+        }
+        return false
+    }
+
+
 
 
 }
@@ -173,3 +216,17 @@ data class StoryType(
     var photo: Photo,
     var videoType: Video
 )
+
+
+class Note(
+    val title: String = "",
+    val note_id: Int = 0,
+    var date: Int = 0,
+    val text: String = "",
+
+    val isDelete: Boolean = false,
+
+    ) {
+
+
+}
