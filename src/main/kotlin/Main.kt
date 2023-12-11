@@ -138,24 +138,6 @@ object WallService {
 
     }
 
-    fun updateNote(note: Note): Boolean {
-
-
-        for ((index, postInArray) in notes.withIndex()) {
-            //println(postInArray)
-            if (postInArray.id == note.id) {
-                note[index] = note.copy(
-                    isDelete=true
-                    
-                )
-                return true
-            }
-        }
-        return false
-    }
-
-
-
 
 }
 
@@ -218,15 +200,59 @@ data class StoryType(
 )
 
 
-class Note(
+interface Identifiable {
+    val id: Int
+    var isDeleted: Boolean
+}
+
+data class Note(
     val title: String = "",
     val note_id: Int = 0,
     var date: Int = 0,
     val text: String = "",
+    override val id: Int = 0,
+    override var isDeleted: Boolean = false
+) : Identifiable
 
-    val isDelete: Boolean = false,
+interface CRUD<T : Identifiable> {
+    val storage: MutableList<T>
+    fun create(element: T): Boolean {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (element.id == elementInStorage.id) {
+                storage.add(element.id, element);
+                return true
+            }
+        }
+        return false
+    }
 
-    ) {
+    fun read(element: T): T? {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (element.id == elementInStorage.id) {
+                return storage[element.id]
 
+            }
+        }
+        return null
+    }
 
+    fun update(element: T): Boolean {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (element.id == elementInStorage.id) {
+                storage[index] = element
+                return true
+            }
+        }
+        return false
+    }
+
+    fun delete(element: T): Boolean {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (element.id == elementInStorage.id) {
+                storage[index].isDeleted = true
+                return true
+            }
+        }
+        return false
+    }
 }
