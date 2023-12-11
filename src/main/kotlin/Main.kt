@@ -210,6 +210,7 @@ data class Note(
     val note_id: Int = 0,
     var date: Int = 0,
     val text: String = "",
+    val comment: Comment,
     override val id: Int = 0,
     override var isDeleted: Boolean = false
 ) : Identifiable
@@ -256,3 +257,32 @@ interface CRUD<T : Identifiable> {
         return false
     }
 }
+
+object NoteService : CRUD<Note> {
+    override val storage: MutableList<Note>
+        get() = TODO("Not yet implemented")
+
+    fun add(index: Int, note: Note) {
+        storage.add(index, note)
+
+
+    }
+
+    fun createComment(index: Int, comment: Comment) {
+       //  storage.add(index,comment)
+
+    }
+
+    fun deleteNote(note: Note) {
+        note.isDeleted = true
+    }
+
+    fun deleteComment(index: Int, note: Note) {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (note.id == elementInStorage.id) {
+                // comment=null
+            }
+        }
+    }
+}
+
