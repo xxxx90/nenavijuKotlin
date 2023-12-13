@@ -207,36 +207,41 @@ interface Identifiable {
 
 data class Note(
     val title: String = "",
-    val note_id: Int = 0,
-    var date: Int = 0,
+    val date: Int = 0,
     val text: String = "",
-    val comment: Comment,
+    val note_id: Int = 0,
     override val id: Int = 0,
-    override var isDeleted: Boolean = false
+    override var isDeleted: Boolean = false,
 ) : Identifiable
+
+
+data class CommentForNote(
+    val date: Int = 0,
+    val text: String = "",
+    val noteId: Int = 0,
+    override val id: Int = 0,
+    override var isDeleted: Boolean = false,
+    ) : Identifiable
 
 interface CRUD<T : Identifiable> {
     val storage: MutableList<T>
-    fun create(element: T): Boolean {
-        for ((index, elementInStorage) in storage.withIndex()) {
-            if (element.id == elementInStorage.id) {
-                storage.add(element.id, element);
-                return true
-            }
-        }
-        return false
+    fun create(element: T): T {
+
+        storage.add(element);
+        return storage.last()
     }
-
-    fun read(element: T): T? {
+    fun readAll(): List<T> {
+        return storage.toList()
+    }
+    fun readById(findId: Int): T? {
         for ((index, elementInStorage) in storage.withIndex()) {
-            if (element.id == elementInStorage.id) {
-                return storage[element.id]
 
+            if (findId == elementInStorage.id) {
+                return storage[index]
             }
         }
         return null
     }
-
     fun update(element: T): Boolean {
         for ((index, elementInStorage) in storage.withIndex()) {
             if (element.id == elementInStorage.id) {
@@ -246,7 +251,6 @@ interface CRUD<T : Identifiable> {
         }
         return false
     }
-
     fun delete(element: T): Boolean {
         for ((index, elementInStorage) in storage.withIndex()) {
             if (element.id == elementInStorage.id) {
@@ -258,31 +262,64 @@ interface CRUD<T : Identifiable> {
     }
 }
 
+class CommentForNoteService(override val storage: MutableList<CommentForNote>):CRUD<CommentForNote> {
+
+    fun restoreComment (id: Int) {
+
+        // кажется у комментария с id, поменять isDelete на false
+        // как сделать не понимаю
+
+    }
+
+    fun deleteComment (id: Int) {
+
+        // кажется у комментария с id, поменять isDelete на true
+        // как сделать не понимаю
+
+    }
+}
+
+
+
+
 object NoteService : CRUD<Note> {
-    override val storage: MutableList<Note>
-        get() = TODO("Not yet implemented")
+    override val storage: MutableList<Note> = mutableListOf()
+       private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
 
-    fun add(index: Int, note: Note) {
-        storage.add(index, note)
-
-
+    fun clear(){
+        storage.clear()
+        commentService.storage.clear()
     }
 
-    fun createComment(index: Int, comment: Comment) {
-       //  storage.add(index,comment)
-
+    fun add( note: Note) {
+        super.create(note)
     }
+
+    fun addComment(idNote: Int, comment: CommentForNote) {
+        commentService.create(comment.copy(noteId = idNote))
+         }
 
     fun deleteNote(note: Note) {
         note.isDeleted = true
     }
 
-    fun deleteComment(index: Int, note: Note) {
-        for ((index, elementInStorage) in storage.withIndex()) {
-            if (note.id == elementInStorage.id) {
-                // comment=null
+    override fun delete(element: Note): Boolean {
+        for (comment in commentService.readAll()) {
+            if (comment.noteId == element.id) {
+                comment.isDeleted = true
             }
         }
+        return super.delete(element)
     }
+
+    fun deleteComment(comment: CommentForNote) {
+        commentService.delete(comment)
+    }
+
+    fun restoreComment(id: Int) {
+        commentService.restoreComment(id)
+    }
+
+
 }
 
