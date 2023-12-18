@@ -221,7 +221,7 @@ data class CommentForNote(
     val noteId: Int = 0,
     override val id: Int = 0,
     override var isDeleted: Boolean = false,
-    ) : Identifiable
+) : Identifiable
 
 interface CRUD<T : Identifiable> {
     val storage: MutableList<T>
@@ -230,9 +230,11 @@ interface CRUD<T : Identifiable> {
         storage.add(element);
         return storage.last()
     }
+
     fun readAll(): List<T> {
         return storage.toList()
     }
+
     fun readById(findId: Int): T? {
         for ((index, elementInStorage) in storage.withIndex()) {
 
@@ -242,6 +244,7 @@ interface CRUD<T : Identifiable> {
         }
         return null
     }
+
     fun update(element: T): Boolean {
         for ((index, elementInStorage) in storage.withIndex()) {
             if (element.id == elementInStorage.id) {
@@ -251,6 +254,7 @@ interface CRUD<T : Identifiable> {
         }
         return false
     }
+
     fun delete(element: T): Boolean {
         for ((index, elementInStorage) in storage.withIndex()) {
             if (element.id == elementInStorage.id) {
@@ -262,64 +266,84 @@ interface CRUD<T : Identifiable> {
     }
 }
 
-class CommentForNoteService(override val storage: MutableList<CommentForNote>):CRUD<CommentForNote> {
-
-    fun restoreComment (id: Int) {
-
-        // кажется у комментария с id, поменять isDelete на false
-        // как сделать не понимаю
-
-    }
-
-    fun deleteComment (id: Int) {
-
-        // кажется у комментария с id, поменять isDelete на true
-        // как сделать не понимаю
-
-    }
-}
-
-
-
-
-object NoteService : CRUD<Note> {
-    override val storage: MutableList<Note> = mutableListOf()
-       private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
-
-    fun clear(){
-        storage.clear()
-        commentService.storage.clear()
-    }
-
-    fun add( note: Note) {
-        super.create(note)
-    }
-
-    fun addComment(idNote: Int, comment: CommentForNote) {
-        commentService.create(comment.copy(noteId = idNote))
-         }
-
-    fun deleteNote(note: Note) {
-        note.isDeleted = true
-    }
-
-    override fun delete(element: Note): Boolean {
-        for (comment in commentService.readAll()) {
-            if (comment.noteId == element.id) {
-                comment.isDeleted = true
-            }
-        }
-        return super.delete(element)
-    }
-
-    fun deleteComment(comment: CommentForNote) {
-        commentService.delete(comment)
-    }
+class CommentForNoteService(override val storage: MutableList<CommentForNote>) : CRUD<CommentForNote> {
 
     fun restoreComment(id: Int) {
-        commentService.restoreComment(id)
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (index == elementInStorage.id) {
+                elementInStorage.isDeleted = false
+            }
+        }
+
+
+    }
+
+    fun deleteComment(id: Int) {
+        for ((index, elementInStorage) in storage.withIndex()) {
+            if (index == elementInStorage.id) {
+                elementInStorage.isDeleted = true
+            }
+
+        }
     }
 
 
+    object NoteService : CRUD<Note> {
+        override val storage: MutableList<Note> = mutableListOf()
+        private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
+
+        fun clear() {
+            storage.clear()
+            commentService.storage.clear()
+        }
+
+        fun add(note: Note) {
+            super.create(note)
+        }
+
+        fun addComment(idNote: Int, comment: CommentForNote) {
+            commentService.create(comment.copy(noteId = idNote))
+        }
+
+
+        fun deleteNote(note: Note) {
+            note.isDeleted = true
+        }
+
+        override fun delete(element: Note): Boolean {
+            for (comment in commentService.readAll()) {
+                if (comment.noteId == element.id) {
+                    comment.isDeleted = true
+                }
+            }
+            return super.delete(element)
+        }
+
+        fun deleteComment(comment: CommentForNote) {
+            commentService.delete(comment)
+        }
+
+        fun edit(element: Note): Boolean {
+            val element = element.copy()
+            storage.add(element.id, element)
+
+            return true
+        }
+
+        fun editComment(id: Int, element: CommentForNote): Boolean {
+            val comment = commentService.update(element)
+            return true
+        }
+
+        fun get() {
+            readAll()
+        }
+
+
+        fun restoreComment(id: Int) {
+            commentService.restoreComment(id)
+        }
+
+    }
 }
 
