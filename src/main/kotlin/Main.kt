@@ -60,6 +60,7 @@ object WallService {
     private var notes = emptyArray<Note>()
     private var id = 0
 
+
     fun add(post: Post): Post {
         posts += post.copy(id = idCounter++)
 
@@ -287,18 +288,20 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
         }
     }
 
-
+}
     object NoteService : CRUD<Note> {
         override val storage: MutableList<Note> = mutableListOf()
         private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
+
+
 
         fun clear() {
             storage.clear()
             commentService.storage.clear()
         }
 
-        fun add(note: Note) {
-            super.create(note)
+        fun add(note: Note) :Note {
+            return create(note)
         }
 
         fun addComment(idNote: Int, comment: CommentForNote) {
@@ -306,8 +309,8 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
         }
 
 
-        fun deleteNote(note: Note) {
-            note.isDeleted = true
+        fun deleteNote(note: Note): Boolean {
+            return delete(note)
         }
 
         override fun delete(element: Note): Boolean {
@@ -319,14 +322,13 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
             return super.delete(element)
         }
 
-        fun deleteComment(comment: CommentForNote) {
-            commentService.delete(comment)
+        fun deleteComment(comment: CommentForNote) :Boolean {
+        return    commentService.delete(comment)
         }
 
         fun edit(element: Note): Boolean {
             val element = element.copy()
             storage.add(element.id, element)
-
             return true
         }
 
@@ -335,15 +337,31 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
             return true
         }
 
-        fun get() {
+        fun get(): List <Note> {
             readAll()
+            return readAll()
+        }
+        fun getComments(id: Int) : List<CommentForNote> {
+
+            val resultList: MutableList<CommentForNote> = mutableListOf()
+            for (elementInStorage in storage) {
+                if (id == elementInStorage.id) {
+                    resultList.add(elementInStorage)
+                }
+            }
+            return resultList.toList()
         }
 
-
-        fun restoreComment(id: Int) {
-            commentService.restoreComment(id)
+        fun restoreComment(id: Int) : Boolean {
+            for (elementInStorage in storage) {
+                if (id == elementInStorage.id) {
+                    elementInStorage.isDeleted = false
+                    return true
+                }
+            }
+            return false
         }
 
     }
-}
+
 
