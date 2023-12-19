@@ -100,6 +100,7 @@ object WallService {
         comments = emptyArray()
         idCounter = 1
 
+
     }
 
     fun createComment(postId: Int, comment: Comment): Comment {
@@ -275,8 +276,16 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
                 elementInStorage.isDeleted = false
             }
         }
+    }
 
-
+    fun getComments(id: Int): List<CommentForNote> {
+        val resultList: MutableList<CommentForNote> = mutableListOf()
+        for (elementInStorage in storage) {
+            if (id == elementInStorage.noteId) {
+                resultList.add(elementInStorage)
+            }
+        }
+        return resultList.toList()
     }
 
     fun deleteComment(id: Int) {
@@ -289,79 +298,67 @@ class CommentForNoteService(override val storage: MutableList<CommentForNote>) :
     }
 
 }
-    object NoteService : CRUD<Note> {
-        override val storage: MutableList<Note> = mutableListOf()
-        private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
 
+object NoteService : CRUD<Note> {
+    override val storage: MutableList<Note> = mutableListOf()
+    private val commentService: CommentForNoteService = CommentForNoteService(mutableListOf())
 
+    fun getComments(id: Int) = commentService.getComments(id)
 
-        fun clear() {
-            storage.clear()
-            commentService.storage.clear()
-        }
-
-        fun add(note: Note) :Note {
-            return create(note)
-        }
-
-        fun addComment(idNote: Int, comment: CommentForNote) {
-            commentService.create(comment.copy(noteId = idNote))
-        }
-
-
-        fun deleteNote(note: Note): Boolean {
-            return delete(note)
-        }
-
-        override fun delete(element: Note): Boolean {
-            for (comment in commentService.readAll()) {
-                if (comment.noteId == element.id) {
-                    comment.isDeleted = true
-                }
-            }
-            return super.delete(element)
-        }
-
-        fun deleteComment(comment: CommentForNote) :Boolean {
-        return    commentService.delete(comment)
-        }
-
-        fun edit(element: Note): Boolean {
-            val element = element.copy()
-            storage.add(element.id, element)
-            return true
-        }
-
-        fun editComment(id: Int, element: CommentForNote): Boolean {
-            val comment = commentService.update(element)
-            return true
-        }
-
-        fun get(): List <Note> {
-            readAll()
-            return readAll()
-        }
-        fun getComments(id: Int) : List<CommentForNote> {
-
-            val resultList: MutableList<CommentForNote> = mutableListOf()
-            for (elementInStorage in storage) {
-                if (id == elementInStorage.id) {
-                    resultList.add(elementInStorage)
-                }
-            }
-            return resultList.toList()
-        }
-
-        fun restoreComment(id: Int) : Boolean {
-            for (elementInStorage in storage) {
-                if (id == elementInStorage.id) {
-                    elementInStorage.isDeleted = false
-                    return true
-                }
-            }
-            return false
-        }
-
+    fun clear() {
+        storage.clear()
+        commentService.storage.clear()
     }
+
+    fun add(note: Note): Note = super.create(note)
+
+
+    fun addComment(idNote: Int, comment: CommentForNote) {
+        commentService.create(comment.copy(noteId = idNote))
+    }
+
+/*
+    fun deleteNote(note: Note): Boolean {
+              return delete(note)
+    }
+*/
+    override fun delete(element: Note): Boolean {
+        for (comment in commentService.readAll()) {
+            if (comment.noteId == element.id) {
+                comment.isDeleted = true
+            }
+        }
+        return super.delete(element)
+    }
+
+    fun deleteComment(comment: CommentForNote): Boolean =
+        commentService.delete(comment)
+
+
+    fun edit(element: Note): Boolean =
+        super.update(element.copy())
+
+
+    fun editComment(id: Int, element: CommentForNote): Boolean = commentService.update(element)
+
+
+    fun get(): List<Note> =
+        super.readAll()
+
+
+    fun getById(id: Int): Note? =
+        super.readById(id)
+
+    fun restoreComment(id: Int): Boolean {
+        for (elementInStorage in storage) {
+            if (id == elementInStorage.id) {
+                elementInStorage.isDeleted = false
+                return true
+            }
+        }
+        return false
+    }
+
+}
 
 
